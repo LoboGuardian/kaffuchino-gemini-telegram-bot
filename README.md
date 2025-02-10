@@ -1,66 +1,138 @@
-# kaffuchino-gemini-telegram-bot
+# Kaffuchino Gemini Telegram Bot
 
-This is a Python Telegram bot powered by the Kaffuchino framework, enhanced with Google's Gemini AI. This bot provides intelligent conversational capabilities, task automation, and seamless access to information within the Telegram app.
+This Python Telegram bot, powered by the Kaffuchino framework, leverages Google's Gemini AI to provide intelligent conversational capabilities, task automation, and seamless access to information within Telegram.
 
 **Key Features:**
 
-*   Leverages Google's Gemini AI for advanced natural language understanding.
-*   Offers intelligent and context-aware responses.
-*   Enables task automation and streamlined workflows.
-*   Provides easy access to information directly from your chats.
-* Easy to use with simple commands:
-    * `/start`: Greet the bot and get started.
-    * `/help`: Get information about the bot's capabilities.
-* Send any text message to trigger the generation process.
-* Send any image with captions to generate responses based on the image. (Multi-modal support)
-* User authentication to prevent unauthorized access by setting `AUTHORIZED_USERS` in the `.env` file (optional).
+*   **Gemini AI Integration:** Utilizes Google's Gemini AI for advanced natural language understanding and generation.
+*   **Intelligent Responses:** Provides context-aware and engaging responses to user input.
+*   **Task Automation:** Enables automation of various tasks within Telegram.
+*   **Information Access:** Offers easy access to information directly within chats.
+*   **Multi-Modal Support:** Processes images with captions to generate relevant responses.
+*   **User Authentication** Secure your bot by configuring `AUTHORIZED_USERS` in the `.env` file.
+*   **Easy to Use:** Simple commands like `/start` and `/help` provide access to core functionalities.
 
-**Requirements:**
-* Python 3.10+
-* Telegram Bot API token
-* Google `gemini` API key
-* dotenv (for environment variables)
+## Requirements
+
+*   Python 3.11+
+*   Telegram Bot API token (obtained from [@BotFather](https://t.me/BotFather))
+*   Google Gemini API key (obtained from [Google AI Studio](https://makersuite.google.com/))
+*   `python-dotenv` package for environment variables
 
 **Setup Instructions:**
 
-1. Clone this repository.
-2. Install the required dependencies:
-    * `pipenv install` (if using pipenv)
-    * `pip install -r requirements.txt` (if not using pipenv)
-3. Create a `.env` file and add the following environment variables:
-    * `BOT_TOKEN`: Your Telegram Bot API token. You can get one by talking to [@BotFather](https://t.me/BotFather).
-    * `GOOGLE_API_KEY`: Your Google Bard API key. You can get one from [Google AI Studio](https://makersuite.google.com/).
-    * `AUTHORIZED_USERS`: A comma-separated list of Telegram usernames or user IDs that are authorized to access the bot. (optional) Example value: `1234567890, 1234567890`
-4. Run the bot:
-    * `pipenv run python main.py` (if using pipenv)
-    * `python main.py` (if not using pipenv)
+1.  **Clone the repository:**
 
-**Getting Started:**
-
-1. Start the bot by running the script.
-   ```shell
-   pipenv run python main.py
-   ```
-   or
-   ```shell
-   python main.py
-   ```
-2. Open the bot in your Telegram chat.
-3. Send any text message to the bot.
-4. The bot will generate creative text formats based on your input and stream the results back to you.
-5. If you want to restrict public access to the bot, you can set `AUTHORIZED_USERS` in the `.env` file to a comma-separated list of Telegram user IDs. Only these users will be able to access the bot.
-    Example:
-    ```shell
-    AUTHORIZED_USERS=1234567890, 1234567890
+    ```bash
+    git clone [https://github.com/LoboGuardian/kaffuchino-gemini-telegram-bot.git](https://www.google.com/search?q=https://github.com/LoboGuardian/kaffuchino-gemini-telegram-bot.git)  # Replace with your repo URL
+    cd kaffuchino-gemini-telegram-bot
     ```
 
-### Bot Commands
+2.  **Install dependencies:**
 
-| Command | Description |
-| ------- | ----------- |
-| `/start` | Greet the bot and get started. |
-| `/help` | Get information about the bot's capabilities. |
-| `/new` | Start a new chat session. |
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3.  **Create a `.env` file:**  Copy the example `.env_example` file or create a new one in the project root and add the following environment variables:
+
+    ```
+    # Telegram bot token from BotFather (https://t.me/botfather)
+    BOT_TOKEN=1224567:xxxxxxxxxxxxxxxxxxxxxxxx (YOUR_TELEGRAM_BOT_TOKEN)
+
+    # Google Gemini API key https://makersuite.google.com/ (free)
+    GOOGLE_API_KEY=xxxxxxxxxxxxxxxxxx (YOUR_GOOGLE_GEMINI_API_KEY)
+    
+    # Authorized Users: Comma seperated values of either Telegram username or user id. To restrict public access of the bot
+    AUTHORIZED_USERS=comma_separated_user_ids_or_usernames
+    # e.g., 1234567890,anotheruser
+
+    ```
+
+4.  **Run the bot:**
+
+    ```bash
+    python bot.py
+    ```
+
+## Getting Started
+
+1.  Run the bot using the command above.
+2.  Open your Telegram app and search for your bot's username.
+3.  Send a message to the bot to start interacting.
+
+## Bot Commands
+
+| Command | Description                               |
+| ------- | ----------------------------------------- |
+| `/start` | Greet the bot and get started.          |
+| `/help`  | Get information about the bot's capabilities. |
+| `/new`   | Start a new chat session (if implemented). |
+
+## Project Structure
+
+```
+kaffuchino-gemini-telegram-bot/
+├── gemini/                # Main bot module
+│   ├── init.py
+│   ├── bot.py             # Main bot logic
+│   ├── api.py             # Gemini API interaction
+│   ├── filters.py         # Message filters and middleware
+│   ├── handlers.py        # Command and event handlers
+│   ├── parser.py          # Text processing
+│   ├── config.py          # Configuration and environment variables
+├── .env                   # Environment variables (BOT_TOKEN, API_KEY, etc.)
+├── .gitignore             # Git ignore file
+├── logs/                  # Log files
+│   ├── app.log
+├── data/                  # Data storage (if needed)
+├── requirements.txt       # Project dependencies
+├── Dockerfile             # Dockerfile (for containerization)
+├── LICENSE                # License file
+├── README.md              # This file
+```
+## Docker Support
+
+You can containerize and run the bot using Docker.
+
+1.  **Build the image:**
+
+    ```bash
+    docker build -t kaffuchino .
+    ```
+
+2.  **Run the container:**
+
+    ```bash
+    docker run -d --name kaffuchino kaffuchino
+    ```
+
+3.  **View logs:**
+
+    ```bash
+    docker logs -f kaffuchino
+    ```
+
+4.  **Stop and remove the container:**
+
+    ```bash
+    docker stop kaffuchino
+    docker rm kaffuchino
+    ```
+
+## Troubleshooting Docker
+
+*   **Verify container status:** `docker ps`
+*   **Force execution (for testing):**  `docker exec -it kaffuchino bash` then `python main.py` inside the container.
+*   **Rebuild image without cache:** `docker build --no-cache -t kaffuchino .`
+
+## Contributions
+
+Contributions are welcome! Please fork the repository and submit pull requests.
+
+## Disclaimer
+
+This bot is still under development.  Responses may sometimes be inaccurate or inappropriate. Use responsibly.
 
 ### Star History
 
@@ -71,15 +143,3 @@ This is a Python Telegram bot powered by the Kaffuchino framework, enhanced with
     <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=LoboGuardian/kaffuchino-gemini-telegram-bot&type=Date" />
   </picture>
 </a>
-
-**Contributions:**
-
-We welcome contributions to this project. Please feel free to fork the repository and submit pull requests.
-
-### Disclaimer
-
-This bot is still under development and may sometimes provide nonsensical or inappropriate responses. Use it responsibly and have fun!
-
-### License
-
-This project is released under the **MIT License**. See the LICENSE file for more details.

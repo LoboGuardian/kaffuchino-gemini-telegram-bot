@@ -1,4 +1,6 @@
+# gemini/filtes.py
 import os
+import logging
 from telegram import Update
 from telegram.ext.filters import UpdateFilter, COMMAND, TEXT, PHOTO, VOICE
 from dotenv import load_dotenv
@@ -6,16 +8,33 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-# Get authorized user IDs/usernames, strip spaces, and remove empty strings
-_AUTHORIZED_USERS = [
-    user.strip()
-    for user in os.getenv("AUTHORIZED_USERS", "").split(",")
-    if user.strip()
-]
+# Set up logging for debugging
+logging.basicConfig(level=logging.WARNING)
+logger = logging.getLogger(__name__)
+
+def get_authorized_users():
+    """
+    Retrieve authorized users from environment variables.
+    Strips spaces and removes empty entries.
+
+    Returns:
+        frozenset: A set of authorized usernames and user IDs.
+    """
+    users = os.getenv("AUTHORIZED_USERS", "")
+    authorized_users = frozenset(user.strip() for user in users.split(",") if user.strip())
+    
+    if not authorized_users:
+        logger.warning("No authorized users specified. Allowing all users.")
+    
+    return authorized_users
 
 
 class AuthorizedUserFilter(UpdateFilter):
     """Custom filter to check if a user is authorized."""
+
+    def __init__(self, authorized_users):
+        super().__init__()
+        self.authorized_users = authorized_users
 
     def filter(self, update: Update) -> bool:
         """
@@ -25,24 +44,25 @@ class AuthorizedUserFilter(UpdateFilter):
             update: The Telegram update object.
 
         Returns:
-             True if the user is authorized, False otherwise.
+            bool: True if the user is authorized, False otherwise.
         """
-        # If no authorized users are defined, allow all users
-        if not _AUTHORIZED_USERS:
-            return True
-        # Check if the message sender's username or ID is in the
-        # authorized list
-        return (
-            update.message.from_user.username in _AUTHORIZED_USERS
-            or str(update.message.from_user.id) in _AUTHORIZED_USERS
-        )
+        if not self.authorized_users:
+            return True  # Allow all users if no restriction is set
+
+        user = update.effective_user  # More reliable way to get the sender
+        if not user:
+            return False  # No user data available, reject by default
+
+        return user.username in self.authorized_users or str(user.id) in self.authorized_users
 
 
-# Instance of the custom filter for easy use
-auth_filter = AuthorizedUserFilter()
+# Retrieve authorized users once to avoid redundant calls
+AUTHORIZED_USERS = get_authorized_users()
 
-# Predefined filters that combine authorization check with
-# specific message types
+# Instance of the custom filter
+auth_filter = AuthorizedUserFilter(AUTHORIZED_USERS)
+
+# Predefined filters that combine authorization checks with specific message types
 
 # MessageFilter: Authorized users' text messages that are not commands
 message_filter = auth_filter & ~COMMAND & TEXT
